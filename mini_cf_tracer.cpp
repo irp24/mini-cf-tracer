@@ -35,10 +35,8 @@ VOID ImageLoad(IMG img, VOID* v)
 int main(int argc, char* argv[])
 {
     PIN_Init(argc, argv);
-
     IMG_AddInstrumentFunction(ImageLoad, 0);
     INS_AddInstrumentFunction(InstrumentInstruction, 0);
-
     PIN_StartProgram();
     return 0;
 }
