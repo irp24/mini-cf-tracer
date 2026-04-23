@@ -2,14 +2,13 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <map>
 
 ADDRINT imgLow = 0;
 ADDRINT imgHigh = 0;
 
 VOID LogEdge(ADDRINT src, std::string* ins, ADDRINT dst)
 {
-    std::cout << std::hex << std::setw(16) << std::setfill('0') << (unsigned long long)src << ": " << std::left << std::setw(40) << std::setfill(' ') << *ins << " -> " << std::right << std::setw(16) << std::setfill('0') << (unsigned long long)dst << std::endl;
+    printf("%016llx: %-40s -> %016llx\n", (unsigned long long)src, ins->c_str(), (unsigned long long)dst);
 }
 
 VOID InstrumentInstruction(INS ins, VOID* v)
@@ -36,7 +35,7 @@ VOID ImageLoad(IMG img, VOID* v)
 
 int main(int argc, char* argv[])
 {
-    if (PIN_Init(argc, argv)) return 1;
+    PIN_Init(argc, argv);
 
     IMG_AddInstrumentFunction(ImageLoad, 0);
     INS_AddInstrumentFunction(InstrumentInstruction, 0);
