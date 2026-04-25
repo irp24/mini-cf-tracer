@@ -1,5 +1,4 @@
 #include "pin.H"
-#include <cstdio>
 #include <string>
 
 ADDRINT img_low = 0;
@@ -7,7 +6,7 @@ ADDRINT img_high = 0;
 
 VOID instruction_analysis(ADDRINT src, std::string* ins, ADDRINT dst)
 {
-    printf("%016llx: %-40s -> %016llx\n", (unsigned long long)src, ins->c_str(), (unsigned long long)dst);
+    printf("%016llx: %-40s -> %016llx\n", src, ins->c_str(), dst);
 }
 
 VOID instruction_instrument(INS ins, VOID* v)
