@@ -2,41 +2,41 @@
 #include <cstdio>
 #include <string>
 
-ADDRINT imgLow = 0;
-ADDRINT imgHigh = 0;
+ADDRINT img_low = 0;
+ADDRINT img_high = 0;
 
-VOID LogEdge(ADDRINT src, std::string* ins, ADDRINT dst)
+VOID instruction_analysis(ADDRINT src, std::string* ins, ADDRINT dst)
 {
     printf("%016llx: %-40s -> %016llx\n", (unsigned long long)src, ins->c_str(), (unsigned long long)dst);
 }
 
-VOID InstrumentInstruction(INS ins, VOID* v)
+VOID instruction_instrument(INS ins, VOID* v)
 {
     ADDRINT addr = INS_Address(ins);
 
-    if (addr < imgLow || addr > imgHigh) return;
+    if (addr < img_low || addr > img_high) return;
     if (!INS_IsControlFlow(ins)) return;
 
     if (INS_IsValidForIpointTakenBranch(ins)) {
         std::string* str_ins_ptr = new std::string(INS_Disassemble(ins));
-        INS_InsertCall(ins, IPOINT_TAKEN_BRANCH, AFUNPTR(LogEdge), IARG_INST_PTR, IARG_PTR, str_ins_ptr, IARG_BRANCH_TARGET_ADDR, IARG_END);
+        INS_InsertCall(ins, IPOINT_TAKEN_BRANCH, AFUNPTR(instruction_analysis), IARG_INST_PTR, IARG_PTR, str_ins_ptr, IARG_BRANCH_TARGET_ADDR, IARG_END);
     }
 }
 
-VOID ImageLoad(IMG img, VOID* v)
+VOID image_instrument(IMG img, VOID* v)
 {
     if (IMG_IsMainExecutable(img))
     {
-        imgLow = IMG_LowAddress(img);
-        imgHigh = IMG_HighAddress(img);
+        img_low = IMG_LowAddress(img);
+        img_high = IMG_HighAddress(img);
     }
 }
 
 int main(int argc, char* argv[])
 {
     PIN_Init(argc, argv);
-    IMG_AddInstrumentFunction(ImageLoad, 0);
-    INS_AddInstrumentFunction(InstrumentInstruction, 0);
+    IMG_AddInstrumentFunction(image_instrument, 0);
+    INS_AddInstrumentFunction(instruction_instrument, 0);
     PIN_StartProgram();
     return 0;
 }
