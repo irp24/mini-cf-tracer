@@ -1,5 +1,4 @@
 #include "pin.H"
-#include <cstdio>
 #include <string>
 
 ADDRINT img_low = 0;
